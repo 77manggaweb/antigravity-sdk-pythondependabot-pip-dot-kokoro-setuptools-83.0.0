@@ -5411,7 +5411,10 @@ class LocalAgentConfigTest(absltest.TestCase):
     self.assertFalse(config.capabilities.enable_subagents)
     self.assertEqual(
         config.capabilities.disabled_tools,
-        [types.BuiltinTools.GENERATE_IMAGE],
+        [
+            types.BuiltinTools.GENERATE_IMAGE,
+            types.BuiltinTools.SEARCH_WEB,
+        ],
     )
     self.assertIsNone(config.capabilities.enabled_tools)
     self.assertEqual(config.policies, [policy.allow_all()])
@@ -5421,6 +5424,7 @@ class LocalAgentConfigTest(absltest.TestCase):
     harness_config = strategy._build_harness_config()
     self.assertFalse(harness_config.harness_side_tools.subagents.enabled)
     self.assertFalse(harness_config.harness_side_tools.generate_image.enabled)
+    self.assertFalse(harness_config.harness_side_tools.search_web.enabled)
     self.assertFalse(harness_config.harness_side_tools.user_questions.enabled)
     self.assertTrue(harness_config.harness_side_tools.run_command.enabled)
     self.assertTrue(harness_config.harness_side_tools.view_file.enabled)
@@ -6397,8 +6401,8 @@ class LocalAgentConfigEvalE2ETest(unittest.IsolatedAsyncioTestCase):
       self.assertEqual(server.attempt_counter, 3)
 
       # 2. Verify HTTP payload tool declarations omit generate_image,
-      # ask_question, and subagent tools while preserving coding tools
-      # and enabling IsDaemon on run_command.
+      # search_web, ask_question, and subagent tools while preserving coding
+      # tools and enabling IsDaemon on run_command.
       first_req_json = server.captured_requests[0]["json"]
       declared_tools = []
       run_command_decl = None
@@ -6408,6 +6412,7 @@ class LocalAgentConfigEvalE2ETest(unittest.IsolatedAsyncioTestCase):
           if decl["name"] == "run_command":
             run_command_decl = decl
       self.assertNotIn("generate_image", declared_tools)
+      self.assertNotIn("search_web", declared_tools)
       self.assertNotIn("ask_question", declared_tools)
       self.assertNotIn("invoke_subagent", declared_tools)
       self.assertNotIn("define_subagent", declared_tools)

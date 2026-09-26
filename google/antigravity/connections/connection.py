@@ -350,7 +350,8 @@ class AgentConfig(abc.ABC, pydantic.BaseModel):
 
     Specifically, `.eval()` configures the following defaults (while preserving
     any fields explicitly set by the caller):
-      - Disables `BuiltinTools.GENERATE_IMAGE` (`disabled_tools`).
+      - Disables `BuiltinTools.GENERATE_IMAGE` and `BuiltinTools.SEARCH_WEB`
+        (`disabled_tools`).
       - Disables subagent spawning and orchestration (`enable_subagents=False`).
       - Enables daemon command execution
         (`run_command_config=RunCommandConfig(enable_daemons=True)`).
@@ -371,7 +372,10 @@ class AgentConfig(abc.ABC, pydantic.BaseModel):
     """
     run_cmd_kwargs: dict[str, Any] = {"enable_daemons": True}
     preset_kwargs: dict[str, Any] = {
-        "disabled_tools": [types.BuiltinTools.GENERATE_IMAGE],
+        "disabled_tools": [
+            types.BuiltinTools.GENERATE_IMAGE,
+            types.BuiltinTools.SEARCH_WEB,
+        ],
         "enable_subagents": False,
         "run_command_config": types.RunCommandConfig(**run_cmd_kwargs),
     }

@@ -401,7 +401,10 @@ class AgentConfigTest(unittest.TestCase):
     self.assertTrue(config.capabilities.run_command_config.enable_daemons)
     self.assertEqual(
         config.capabilities.disabled_tools,
-        [types.BuiltinTools.GENERATE_IMAGE],
+        [
+            types.BuiltinTools.GENERATE_IMAGE,
+            types.BuiltinTools.SEARCH_WEB,
+        ],
     )
     self.assertIsNone(config.capabilities.enabled_tools)
     self.assertEqual(config.policies, [policy.allow_all()])
